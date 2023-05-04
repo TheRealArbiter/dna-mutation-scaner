@@ -1,0 +1,14 @@
+{
+    "mutation": {
+        "method": "POST",
+        "complemento": {
+            "MUTATION": "https://qgim0d3hj9.execute-api.us-east-1.amazonaws.com/mutation"
+        }
+    },
+    "stats": {
+        "method": "GET",
+        "complemento": {
+            "STATS": "https://svdyddut60.execute-api.us-east-1.amazonaws.com/stats"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demoapimutation-service
+  namespace: mutation
+  labels:
+    app: demoapimutation
+spec:
+  type: ClusterIP
+  selector:
+    app: demoapimutation
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

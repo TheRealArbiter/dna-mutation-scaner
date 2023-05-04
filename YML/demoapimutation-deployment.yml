@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demoapimutation-login-deployment
+  namespace: mutation
+  labels:
+    app: demoapimutation-login
+spec:
+  progressDeadlineSeconds: 60
+  minReadySeconds: 30
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demoapimutation-login
+  template:
+    metadata:
+      labels:
+        app: demoapimutation-login
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: nodeInfra
+                operator: In
+                values:
+                - mutation
+      tolerations:
+      - key: "nodeInfra"
+        operator: "Equal"
+        value: "mutation"
+        effect: "NoSchedule"
+      containers:
+      - name: demoapimutation-login
+        image: hub.evolve.org.mx/dev/demoapimutation-login:1.0.0
+        imagePullPolicy: Always
+        env:
+        - name: NODE_ENV
+          value: "desarrollo"
+        - name: ENV_SERVER
+          valueFrom:
+            secretKeyRef:
+              name: demoapimutation-login-secret
+              key: ENV_SERVER
+        - name: ENV_BASE
+          valueFrom:
+            secretKeyRef:
+              name: demoapimutation-login-secret
+              key: ENV_BASE
+        - name: ENV_USER
+          valueFrom:
+            secretKeyRef:
+              name: demoapimutation-login-secret
+              key: ENV_USER
+        - name: ENV_PASS
+          valueFrom:
+            secretKeyRef:
+              name: demoapimutation-login-secret
+              key: ENV_PASS
+        resources:
+          requests:
+            memory: 64Mi
+            cpu: 50m
+          limits:
+            memory: 150Mi
+            cpu: 150m
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - mountPath: "/home/node/certs/private.pem"
+          subPath: private.pem
+          readOnly: false
+          name: private-pem-storage
+        - mountPath: "/home/node/certs/private_key_Mutation.pem"
+          subPath: private_key_MutationDev.pem
+          readOnly: false
+          name: private-mutation-storage
+        - mountPath: "/home/node/logs"
+          name: logs-mutation-storage
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+      imagePullSecrets:
+      - name: storecred
+      volumes:
+        - name: private-pem-storage
+          secret:
+            secretName: llaves
+            items:
+            - key: private_general.pem
+              path: private.pem
+              mode: 511
+        - name: private-mutation-storage
+          secret:
+            secretName: llaves
+            items:
+            - key: private_Mutation.pem
+              path: private_key_CajeroDev.pem
+              mode: 511
+        - name: logs-mutation-storage
+          persistentVolumeClaim:
+            claimName: logs-mutation-pvc
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
