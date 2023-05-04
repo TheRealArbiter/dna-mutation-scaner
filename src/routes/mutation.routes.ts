@@ -40,32 +40,10 @@ const mutation = async (req: Request, res: Response) => {
                 estandarResponse.resultado = resp.data;
                 res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
             } else {
-                if (resp.code === "004") {
-                    estandarResponse.codigo = resp.code  === "004" ?  "004" : HTTP_CODIGOS._400.contexto._010.codigo;
-                    estandarResponse.mensaje = HTTP_CODIGOS._400.contexto._010.mensaje;
-                    estandarResponse.errores.push(resp.msg ?? "")
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                    
-                }else if(resp.code === "006") {
-                    logger.info(`ROUTE mutation nip.routes: ${JSON.stringify(resp)}`);
-                    estandarResponse.codigo =  resp.code  === "006" ?  "006" : HTTP_CODIGOS._400.contexto._010.codigo;;
-                    estandarResponse.mensaje = HTTP_CODIGOS._400.contexto._010.mensaje;
-                    estandarResponse.errores.push(resp.msg ?? "")
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                }else if(resp.code === "007") {
-                    logger.info(`ROUTE mutation nip.routes: ${JSON.stringify(resp)}`);
-                    estandarResponse.codigo =  resp.code  === "007" ?  "007" : HTTP_CODIGOS._400.contexto._010.codigo;;
-                    estandarResponse.mensaje = HTTP_CODIGOS._400.contexto._010.mensaje;
-                    estandarResponse.errores.push(resp.msg ?? "")
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                }else{
-                    logger.info(`ROUTE mutation nip.routes: ${JSON.stringify(resp)}`);
-                    estandarResponse.codigo = HTTP_CODIGOS._200.contexto._000.codigo;
-                    estandarResponse.mensaje = HTTP_CODIGOS._200.contexto._000.mensaje;
-                    estandarResponse.resultado = resp.data;
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                }
-
+                estandarResponse.codigo = HTTP_CODIGOS._403.contexto._000.codigo;
+                estandarResponse.mensaje = HTTP_CODIGOS._403.contexto._000.mensaje;
+                res.status(HTTP_CODIGOS._403.estatus).json(estandarResponse);
+                metric({ route: req.url, code: 500, method: req.method, origin: req.headers.origin || '' });
             }
             metric({ route: req.url, code: stat, method: req.method, origin: req.headers.origin || '' });
             logger.info(`ROUTE mutation FINISH RESPONSE ${req.url}, METHOD: ${req.method}, request: ${JSON.stringify(req.body)}, ID: ${id_tracking}`);
@@ -88,7 +66,6 @@ const mutation = async (req: Request, res: Response) => {
 
 const stats = async (req: Request, res: Response) => {
     let estandarResponse: IEstandarResponse = JSON.parse(response.estandar_response);
-    let validar : { body_json?:  {}, errors?: []};
     try {
         const metric: Function = httpReqDurationMicroSec.startTimer();
         logger.info(`ROUTE stats START REQUEST ${req.url}, METHOD: ${req.method}, request: ${JSON.stringify(req.body)}, ID: ${id_tracking}`);
@@ -99,34 +76,8 @@ const stats = async (req: Request, res: Response) => {
                 estandarResponse.mensaje = HTTP_CODIGOS._200.contexto._000.mensaje;
                 estandarResponse.resultado = resp.data;
                 res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-            } else {
-                if (resp.code === "004") {
-                    estandarResponse.codigo = resp.code  === "004" ?  "004" : HTTP_CODIGOS._400.contexto._010.codigo;
-                    estandarResponse.mensaje = HTTP_CODIGOS._400.contexto._010.mensaje;
-                    estandarResponse.errores.push(resp.msg ?? "")
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                    
-                }else if(resp.code === "006") {
-                    logger.info(`ROUTE stats nip.routes: ${JSON.stringify(resp)}`);
-                    estandarResponse.codigo =  resp.code  === "006" ?  "006" : HTTP_CODIGOS._400.contexto._010.codigo;;
-                    estandarResponse.mensaje = HTTP_CODIGOS._400.contexto._010.mensaje;
-                    estandarResponse.errores.push(resp.msg ?? "")
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                }else if(resp.code === "007") {
-                    logger.info(`ROUTE stats nip.routes: ${JSON.stringify(resp)}`);
-                    estandarResponse.codigo =  resp.code  === "007" ?  "007" : HTTP_CODIGOS._400.contexto._010.codigo;;
-                    estandarResponse.mensaje = HTTP_CODIGOS._400.contexto._010.mensaje;
-                    estandarResponse.errores.push(resp.msg ?? "")
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                }else{
-                    logger.info(`ROUTE stats nip.routes: ${JSON.stringify(resp)}`);
-                    estandarResponse.codigo = HTTP_CODIGOS._200.contexto._000.codigo;
-                    estandarResponse.mensaje = HTTP_CODIGOS._200.contexto._000.mensaje;
-                    estandarResponse.resultado = resp.data;
-                    res.status(HTTP_CODIGOS._200.estatus).json(estandarResponse);
-                }
-
             }
+
             metric({ route: req.url, code: stat, method: req.method, origin: req.headers.origin || '' });
             logger.info(`ROUTE stats FINISH RESPONSE ${req.url}, METHOD: ${req.method}, request: ${JSON.stringify(req.body)}, ID: ${id_tracking}`);
         }, (err: Error) => {

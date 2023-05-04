@@ -25,6 +25,15 @@ export const HTTP_CODIGOS = {
             }
         }
     },
+    _403:{
+        'estatus':403,
+        'contexto':{
+            _000:{
+                'codigo':'000',
+                'mensaje':'No mutations'
+            }
+        }
+    },
     _500:{
         'estatus':500,
         'contexto':{
