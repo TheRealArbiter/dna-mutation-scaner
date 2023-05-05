@@ -5,6 +5,7 @@ Api Gateway (AWS) y DynamoDb(AWS)
 2. Se adjunta una colección para invocar el server con la misma funcionalidad implementada
 3. se adjuntan las urls para el consumo directo de las lambdas que de igual manera se encuentra en la colección
 de postman proporcionada
+4. Correr npm i para la instalación de dependencias y npm start para iniciar el servidor.
 
 
 /***URl del repo****\
